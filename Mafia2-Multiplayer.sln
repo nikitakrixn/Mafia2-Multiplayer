@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mafia2-Launcher", "Mafia2-L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mafia2-Client", "Mafia2-Client\Mafia2-Client.csproj", "{FE3B3B8C-0327-4264-82AF-FF8E10F59F9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mafia2-Server", "Mafia2-Server\Mafia2-Server.csproj", "{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{FE3B3B8C-0327-4264-82AF-FF8E10F59F9F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE3B3B8C-0327-4264-82AF-FF8E10F59F9F}.Release|x86.ActiveCfg = Release|x86
 		{FE3B3B8C-0327-4264-82AF-FF8E10F59F9F}.Release|x86.Build.0 = Release|x86
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D6D800C-0AC2-4E05-B253-A2E0CD10402A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
