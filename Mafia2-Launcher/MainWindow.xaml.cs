@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using System.IO;
-using System.Threading;
 using Mafia2_Launcher.Class;
 
 namespace Mafia2_Launcher
@@ -37,41 +36,40 @@ namespace Mafia2_Launcher
 
         private void LaunchGame_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(Injector.GetClientLibraryPath()))
+            if (File.Exists(ProcUtils.GetClientLibraryPath()))
             {
-                if (Injector.ProcessIsRunning(processName))
+                if (ProcUtils.ProcessIsRunning(processName))
                 {
-                    MessageBoxResult result = MessageBox.Show("У вас уже запущена игра Mafia2. Хотите закрыть её?", captionName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.Yes)
+                    try
                     {
-                        Injector.CloseProcess(processName);
+                        MessageBoxResult result = MessageBox.Show("У вас уже запущена игра Mafia2. Хотите закрыть её?", captionName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            ProcUtils.CloseProcess(processName);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Environment.Exit(1);
+                        MessageBox.Show(ex.Message, captionName, MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
                 else
                 {
                     try
                     {
-                        Injector.StartProcess(M2Registry.PathName);
+                        ProcUtils.StartProcess(M2Registry.PathName);
+                        ProcUtils.FindMafia2();
+                        ProcUtils.InjectDLL();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, captionName, MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
-                    finally
-                    {
-                        Thread.Sleep(2000);
-                        Injector.InjectDLL();
-                    }
-
                 }
             }
             else
             {
-                MessageBox.Show("Файл " + Injector.GetClientLibrary() + " должен находится рядом с " + System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, captionName, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Файл " + ProcUtils.GetClientLibrary() + " должен находится рядом с " + System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, captionName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -101,9 +99,9 @@ namespace Mafia2_Launcher
 
         private void ExitGame_Click(object sender, RoutedEventArgs e)
         {
-            if (Injector.ProcessIsRunning(processName))
+            if (ProcUtils.ProcessIsRunning(processName))
             {
-                Injector.CloseProcess(processName);
+                ProcUtils.CloseProcess(processName);
             }
         }
     }

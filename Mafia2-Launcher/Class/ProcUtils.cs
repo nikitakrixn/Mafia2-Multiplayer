@@ -1,31 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Mafia2_Launcher.Class
 {
-    internal static class Injector
+    internal static class ProcUtils
     {
-
+        public static Process Process = null;
         private static readonly string clientLibrary = "m2o-client.dll";
 
         public static bool InjectDLL()
         {
-            Process process = Process.GetProcessesByName("Mafia2").FirstOrDefault();
             byte[] byLibName = Encoding.UTF8.GetBytes(GetClientLibraryPath());
 
-            IntPtr hMemory = WinAPI.VirtualAllocEx(process.Handle, IntPtr.Zero, byLibName.Length, WinAPI.AllocationType.Commit, WinAPI.MemoryProtection.ReadWrite);
+            IntPtr hMemory = WinAPI.VirtualAllocEx(Process.Handle, IntPtr.Zero, byLibName.Length, WinAPI.AllocationType.Commit, WinAPI.MemoryProtection.ReadWrite);
 
             if (hMemory == IntPtr.Zero)
             {
                 return false;
             }
 
-            if (WinAPI.WriteProcessMemory(process.Handle, hMemory, byLibName, byLibName.Length, out _) == 0)
+            if (WinAPI.WriteProcessMemory(Process.Handle, hMemory, byLibName, byLibName.Length, out _) == 0)
             {
                 return false;
             }
@@ -37,7 +35,7 @@ namespace Mafia2_Launcher.Class
                 return false;
             }
 
-            IntPtr hThread = WinAPI.CreateRemoteThread(process.Handle, 0, 0, pLoadLibraryAddr, hMemory, 0, out _);
+            IntPtr hThread = WinAPI.CreateRemoteThread(Process.Handle, 0, 0, pLoadLibraryAddr, hMemory, 0, out _);
 
             if (hThread == IntPtr.Zero)
             {
@@ -50,7 +48,7 @@ namespace Mafia2_Launcher.Class
                 IntPtr hEnt = WinAPI.GetProcAddress(hLib, "Init");
                 long iOff = dwAddr + (int)hEnt - (int)hLib;
 
-                WinAPI.CreateRemoteThread(process.Handle, 0, 0, (IntPtr)iOff, IntPtr.Zero, 0, out _);
+                WinAPI.CreateRemoteThread(Process.Handle, 0, 0, (IntPtr)iOff, IntPtr.Zero, 0, out _);
 
                 return hThread != IntPtr.Zero;
             }
@@ -87,10 +85,26 @@ namespace Mafia2_Launcher.Class
         {
             return clientLibrary;
         }
+
+        public static void FindMafia2()
+        {
+            while (Process == null)
+            {
+                Thread.Sleep(500);
+
+                Process[] ProcList = Process.GetProcessesByName("mafia2");
+                if (ProcList.Length < 1)
+                {
+                    continue;
+                }
+
+                Process = ProcList[0];
+            }
+        }
     }
 
     #region WIN32API
-    public static class WinAPI
+    internal static class WinAPI
     {
         [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
